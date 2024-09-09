@@ -1,0 +1,4 @@
+presentation-ui:
+  params:
+    S3BucketOaiId:
+      value: '' # ID of S3 bucket

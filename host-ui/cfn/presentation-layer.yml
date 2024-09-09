@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'presentation'
+Parameters:
+  S3BucketOaiId:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: '/cfn-params/presentation-ui/S3BucketOaiId'
+    AllowedValues:
+      - '/cfn-params/presentation-ui/S3BucketOaiId'
+Resources:
+  # S3 Bucket for hosting SPA
+  StaticSiteBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: 'bucket-name' # S3 bucket-name
+      WebsiteConfiguration:
+        IndexDocument: 'index.html'
+        ErrorDocument: 'error.html'
+
+  # Bucket Policy to allow public read access to the S3 bucket
+  S3BucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref StaticSiteBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Sub ${SpaAssetBucket.Arn}/*

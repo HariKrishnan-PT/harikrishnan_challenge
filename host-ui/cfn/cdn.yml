@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: "global"
+Resources:
+  # CloudFront Distribution
+  CloudFrontDistribution:
+    Type: 'AWS::CloudFront::Distribution'
+    Properties:
+      DistributionConfig:
+        Origins:
+          - ConnectionAttempts: 3
+            ConnectionTimeout: 10
+            DomainName: !Sub '{BUCKET_NAME}.s3.amazonaws.com'
+            Id: 'S3Origin'
+            OriginPath: ''
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${S3OriginAccessIdentity}'
+        Enabled: 'true'
+        DefaultRootObject: 'index.html'
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - 'HEAD'
+            - 'GET'
+          CachedMethods:
+            - 'HEAD'
+            - 'GET'
+          TargetOriginId: 'S3Origin'
+          ViewerProtocolPolicy: 'redirect-to-https'
+        ViewerCertificate:
+          AcmCertificateArn: !Ref SSLCertificateArn
+          SslSupportMethod: 'sni-only'
+          MinimumProtocolVersion: 'TLSv1.2_2021'
+        PriceClass: 'PriceClass_100'
+
+  # CloudFront Origin Access Identity
+  S3OriginAccessIdentity:
+    Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: 'Access Identity for S3 bucket'
+
+  # Route 53 Record Set for custom domain
+  Route53RecordSet:
+    Type: 'AWS::Route53::RecordSet'
+    Properties:
+      HostedZoneId: !Sub '{HostedZoneId}' # Provide the zone_id in which the SPA will be hosted
+      Name: 'www.example.com'
+      Type: 'A'
+      AliasTarget:
+        DNSName: !GetAtt CloudFrontDistribution.DomainName
+        EvaluateTargetHealth: true
+      HostedZoneId: 'Z2FDTNDATAQYW2' # CloudFront Hosted Zone ID
+
+Parameters:
+  SSLCertificateArn:
+    Type: 'String'
+    Description: 'ARN of the SSL certificate in ACM'
+  S3BucketOaiId:
+    Description: "ID of S3BucketOai"
+    Value: !Ref S3OriginAccessIdentity
+    Export:
+      Name: GlobalPlatform-Cdn-SpaAssetBucketOaiId
+
