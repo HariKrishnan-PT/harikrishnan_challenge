@@ -106,13 +106,12 @@ sh deploy.sh
 
 ## Secure the Application
 
-a. Restrict Bucket Access
+1. Restrict Bucket Access
+   Ensure the bucket is not publicly accessible.
+   Access is only through CloudFront via the OAI.
 
-Ensure the bucket is not publicly accessible.
-Access is only through CloudFront via the OAI.
-b. Enforce HTTPS
+2. Enforce HTTPS
+   CloudFront is configured to redirect HTTP requests to HTTPS.
 
-CloudFront is configured to redirect HTTP requests to HTTPS.
-c. Use WAF (Optional)
-
-For additional security, you can use AWS Web Application Firewall (WAF) with CloudFront.
+3. Use WAF (Optional)
+   For additional security, you can use AWS Web Application Firewall (WAF) with CloudFront.
