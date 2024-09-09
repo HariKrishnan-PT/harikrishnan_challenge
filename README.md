@@ -99,13 +99,9 @@ sh deploy.sh
 ## Steps to use.
 
 1. Create an S3 Bucket: The StaticSiteBucket resource will automatically create it.
-
 1. Deploy the Template: Use AWS CloudFormation to deploy the template. Make sure to provide the ARN of the SSL certificate from ACM.
-
 1. Upload Content: Upload your SPA files (e.g., index.html) to the S3 bucket created by the template.
-
-1. Update Route 53: If you're using a custom domain, replace your-hosted-zone-id with your Route 53 hosted zone ID and www.example.com with your domain.
-
+1. Update Route 53: Replace your-hosted-zone-id with your Route 53 hosted zone ID and `www.example.com` with your domain.
 1. Verify Deployment: Access your SPA through the CloudFront URL or your custom domain to ensure everything is set up correctly.
 
 ## Secure the Application
